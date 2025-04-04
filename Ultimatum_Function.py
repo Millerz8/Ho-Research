@@ -22,7 +22,7 @@ def ultimatum_game(client, player1, title1, player2, title2):
     Then {player2} will decide whether to accept or reject {player1}'s proposal. If {player2} accepts,
     then {player1} and {player2} get the money as they agreed to split. If {player2} rejects, then both receive nothing.
 
-    {player1} takes $6 for himself and offers {player2} $4.
+    {player1} takes $6 for {pronoun} and offers {player2} $4.
 
     With a simple 'yes' or 'no' answer, does {player2} accept the proposal?"""
 

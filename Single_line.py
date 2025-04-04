@@ -3,7 +3,7 @@ import openai
 from openai import OpenAI
 import pandas as pd
 from Ultimatum_Function import ultimatum_game
-from LauryHolt import laurylottery
+from LauryHoltSingle import laurylotterysingle
 import random
 import numpy as np
 
@@ -44,7 +44,7 @@ payouts['APayout2'] = "$" + (payouts['APayout2']*10).astype(str) + ".00"
 payouts['BPayout1'] = "$" + (payouts['BPayout1']*10).astype(str) + "0"
 payouts['BPayout2'] = "$" + (payouts['BPayout2']*10).astype(str) + ".00"
 
-# Switching "A" and "B" labels to confuse chat
+
 formatted_df = pd.DataFrame()
 formatted_df["Choice"] = payouts["Round"]
 formatted_df["Option A"] = payouts["AProbability1"] + " chance of winning " + payouts["APayout1"] + ", " + payouts["AProbability2"] + " chance of winning " + payouts["APayout2"]
@@ -66,16 +66,20 @@ def count_alternations(s):
 invalid_response = 0
 num_safe_choices = []
 response_array = None
-for i in range(0, len(player1)):
 
-    response = laurylottery(client = client, player1 = surnames.loc[player1[i], "Last Name"], title1 = titles[title1[i]], 
-                            payoutmatrix = formatted_df, age = older_ages[i])
-    if count_alternations(response) > 1:
+for i in range(0, len(player1)):
+    responses = []
+    for round in formatted_df["Choice"]:
+        response = laurylotterysingle(client = client, player1 = surnames.loc[player1[i], "Last Name"], title1 = titles[title1[i]], 
+                            payoutmatrix = formatted_df, round = round, age = older_ages[i])
+        responses.append(response)
+    if count_alternations(responses) > 1:
         invalid_response += 1
     else:
-        count_A = response.count("A")
+        count_A = responses.count("A")
         num_safe_choices.append(count_A)
-    response_array_new = np.array(list(response))
+    response_array_new = np.array(list(responses))
+    print(response_array_new)
     if response_array is None:
         response_array = response_array_new  # First iteration
     else:
@@ -105,28 +109,7 @@ plt.legend()
 plt.grid(True)
 
 plt.show()
-#names = pd.read_csv("Surnames.csv")
-#surnames = names[["Last Name"]]
 
-#numprompts = 200
-
-#player1s = random.sample(range(453), numprompts)
-#player2s = random.sample(range(453), numprompts)
-
-
-#title1s = np.random.choice([0, 1], size=numprompts, replace=True)
-#title2s = np.random.choice([0, 1], size=numprompts, replace=True)
-titles = ["Mr.", "Ms."]
-
-names =[]
-yescount = 0
-#for i in range(0, len(player1s)):
-    #response = ultimatum_game(client, player1 = surnames.loc[player1s[i], "Last Name"], title1 = titles[title1s[i]], player2 = surnames.loc[player2s[i], "Last Name"], title2 = titles[title2s[i]])
-    #if response == "Yes.":
-        #yescount += 1
-
-#acceptrate = yescount/numprompts
-#print(acceptrate)
 
 
 
