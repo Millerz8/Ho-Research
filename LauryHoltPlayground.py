@@ -45,7 +45,7 @@ def laurylotteryplayground(client, player1, title1, payoutmatrix, age):
     prompt = prompt1 + prompt2 + prompt3
     print(prompt)
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[{"role": "user", "content": prompt}]
     )
 
